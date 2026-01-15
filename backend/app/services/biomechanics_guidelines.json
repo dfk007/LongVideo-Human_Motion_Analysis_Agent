@@ -1,0 +1,640 @@
+{
+  "exercises": {
+    "squat": {
+      "name": "Back Squat",
+      "description": "Fundamental lower body compound movement involving hip and knee flexion",
+      "safety_standards": {
+        "knee_angle": {
+          "safe_range": [90, 180],
+          "optimal_range": [90, 130],
+          "unit": "degrees",
+          "measurement": "Angle between hip-knee-ankle at bottom position",
+          "violation_risk": "high",
+          "source": "NSCA Essentials of Strength Training, 4th Ed"
+        },
+        "back_angle": {
+          "safe_range": [160, 190],
+          "optimal_range": [170, 185],
+          "unit": "degrees",
+          "measurement": "Spine alignment from thoracic to lumbar (neutral spine)",
+          "violation_risk": "critical",
+          "source": "McGill S. Low Back Disorders, 3rd Ed"
+        },
+        "hip_angle": {
+          "safe_range": [70, 180],
+          "optimal_range": [90, 120],
+          "unit": "degrees",
+          "measurement": "Angle between torso-hip-thigh",
+          "violation_risk": "medium",
+          "source": "ExRx.net Squat Biomechanics Analysis"
+        },
+        "knee_tracking": {
+          "standard": "Knees must track in line with toes (2nd-3rd toe direction)",
+          "measurement": "Medial-lateral knee displacement relative to foot position",
+          "safe_deviation": "< 2cm medial or lateral from toe line",
+          "violation_risk": "high",
+          "common_error": "Knee valgus (knees caving inward)",
+          "source": "ACE Personal Trainer Manual, 5th Ed"
+        },
+        "depth": {
+          "full_squat": "Hip crease below top of knee (thigh parallel or below)",
+          "parallel": "Hip crease at knee level",
+          "quarter_squat": "Knee angle > 120 degrees",
+          "measurement": "Vertical position of hip crease relative to knee",
+          "source": "Starting Strength, 3rd Ed - Mark Rippetoe"
+        },
+        "foot_position": {
+          "stance_width": "Shoulder width to 1.5x shoulder width",
+          "toe_angle": "5-30 degrees external rotation per foot",
+          "weight_distribution": "Mid-foot balanced tripod (heel, 1st & 5th metatarsal)",
+          "violation_risk": "medium",
+          "source": "NSCA Biomechanics Guidelines"
+        },
+        "bar_path": {
+          "standard": "Vertical line over mid-foot throughout movement",
+          "safe_deviation": "< 5cm forward or backward displacement",
+          "violation_risk": "high",
+          "source": "Rippetoe M. Starting Strength Biomechanics"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Knee valgus (knees caving inward)",
+          "detection": "Knee medial displacement > 2cm during descent/ascent",
+          "risk": "ACL injury, meniscus damage, patellofemoral pain syndrome",
+          "correction": "Cue: 'Push knees out'. Strengthen hip abductors (glute medius). Reduce load by 20-30%.",
+          "source": "Hewett TE et al. Biomechanical Measures of Neuromuscular Control (2005)"
+        },
+        {
+          "error": "Butt wink (posterior pelvic tilt at bottom)",
+          "detection": "Lumbar spine flexion > 10 degrees at depth",
+          "risk": "Disc herniation, lower back strain, sacroiliac joint pain",
+          "correction": "Reduce depth to parallel. Improve hip flexor flexibility. Strengthen core stability.",
+          "source": "McGill S. Ultimate Back Fitness and Performance"
+        },
+        {
+          "error": "Excessive forward lean",
+          "detection": "Torso angle < 45 degrees from vertical (high bar) or < 30 degrees (low bar)",
+          "risk": "Lower back injury, inefficient force transfer, balance loss",
+          "correction": "Check bar position on back. Strengthen core and upper back. Improve ankle mobility.",
+          "source": "NSCA Squat Technique Guidelines"
+        },
+        {
+          "error": "Heels lifting off ground",
+          "detection": "Heel vertical displacement > 1cm during movement",
+          "risk": "Knee stress, balance instability, Achilles tendon strain",
+          "correction": "Improve ankle dorsiflexion mobility. Widen stance slightly. Use heel wedge temporarily.",
+          "source": "ACE Exercise Technique Manual"
+        },
+        {
+          "error": "Knees traveling too far forward",
+          "detection": "Knee position > 5cm anterior to toes at bottom",
+          "risk": "Excessive patellofemoral compression, knee pain",
+          "correction": "Sit back more into hips. Cue: 'Push hips back first'. Check ankle mobility.",
+          "source": "ExRx.net Knee Biomechanics"
+        }
+      ],
+      "context_modifiers": {
+        "powerlifting": {
+          "depth_requirement": "Hip crease must break parallel (below knee)",
+          "back_angle_tolerance": [155, 190],
+          "source": "IPF Technical Rules 2024"
+        },
+        "olympic_weightlifting": {
+          "depth_requirement": "Full depth (ass-to-grass)",
+          "back_angle_tolerance": [165, 185],
+          "mobility_priority": "Extreme ankle and hip mobility required",
+          "source": "USA Weightlifting Coaching Manual"
+        },
+        "beginner": {
+          "depth_recommendation": "Parallel or slightly above initially",
+          "load_limit": "Bodyweight to 50% estimated 1RM",
+          "priority": "Perfect form over depth or load",
+          "source": "ACE Beginner Training Guidelines"
+        },
+        "injury_history": {
+          "knee_issues": "Limit depth to 100 degrees knee angle minimum",
+          "back_issues": "Maintain stricter back angle requirement (> 170 degrees)",
+          "hip_issues": "Widen stance, reduce depth",
+          "source": "NASM Corrective Exercise Specialization"
+        }
+      }
+    },
+    
+    "deadlift": {
+      "name": "Conventional Deadlift",
+      "description": "Hip hinge pattern for posterior chain development, foundational strength movement",
+      "safety_standards": {
+        "back_angle": {
+          "safe_range": [170, 190],
+          "optimal_range": [175, 185],
+          "unit": "degrees",
+          "measurement": "Neutral spine angle throughout entire lift",
+          "violation_risk": "critical",
+          "source": "McGill S. Ultimate Back Fitness and Performance"
+        },
+        "hip_angle_start": {
+          "safe_range": [45, 70],
+          "optimal_range": [50, 60],
+          "unit": "degrees",
+          "measurement": "Hip hinge angle at starting position",
+          "violation_risk": "high",
+          "source": "Starting Strength - Deadlift Mechanics"
+        },
+        "shoulder_position": {
+          "standard": "Shoulders directly over or slightly ahead of barbell (1-2cm)",
+          "measurement": "Shoulder joint vertical position relative to bar",
+          "violation_risk": "medium",
+          "source": "NSCA Deadlift Technique Standards"
+        },
+        "bar_path": {
+          "standard": "Perfectly vertical path, bar maintains contact with legs",
+          "safe_deviation": "< 2cm horizontal displacement",
+          "violation_risk": "high",
+          "source": "ExRx.net Deadlift Biomechanics"
+        },
+        "grip_width": {
+          "standard": "Hands just outside legs, arms completely vertical",
+          "measurement": "Grip width allows arms to clear thighs without interference",
+          "source": "Starting Strength Grip Guidelines"
+        },
+        "knee_angle_start": {
+          "safe_range": [110, 140],
+          "optimal_range": [120, 130],
+          "unit": "degrees",
+          "measurement": "Knee angle at starting position",
+          "source": "NSCA Biomechanics"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Lumbar flexion (rounded lower back)",
+          "detection": "Back angle < 170 degrees, visible rounding in lumbar spine",
+          "risk": "Disc herniation, severe spinal injury, chronic back pain",
+          "correction": "STOP IMMEDIATELY. Reduce weight 40-50%. Reset form. Strengthen erector spinae.",
+          "source": "McGill S. Low Back Injury Research"
+        },
+        {
+          "error": "Hips rising too fast (squat-morph)",
+          "detection": "Hip extension occurs before knee extension",
+          "risk": "Excessive back loading, inefficient mechanics, back strain",
+          "correction": "Cue: 'Push floor away'. Start with hips slightly higher. Strengthen posterior chain.",
+          "source": "Rippetoe M. Deadlift Sequencing"
+        },
+        {
+          "error": "Bar drifting away from body",
+          "detection": "Horizontal bar displacement > 3cm from vertical path",
+          "risk": "Increased moment arm on spine, back injury, bicep tear risk",
+          "correction": "Cue: 'Drag bar up legs'. Keep lats engaged. Check starting position.",
+          "source": "ExRx.net Bar Path Analysis"
+        },
+        {
+          "error": "Shoulders behind bar at start",
+          "detection": "Shoulder joint posterior to bar vertical line",
+          "risk": "Inefficient leverage, excessive back loading",
+          "correction": "Shift weight forward. Push knees out. Get shoulders over bar.",
+          "source": "Starting Strength Setup Protocol"
+        },
+        {
+          "error": "Hyperextension at lockout",
+          "detection": "Back angle > 190 degrees, excessive lean backward",
+          "risk": "Lower back strain, spinal stress",
+          "correction": "Cue: 'Stand tall, neutral spine'. Strengthen core. Don't lean back.",
+          "source": "NSCA Deadlift Lockout Standards"
+        },
+        {
+          "error": "Jerking the bar off floor",
+          "detection": "Rapid acceleration at start, loss of tension",
+          "risk": "Bicep tear, back injury, failed lift",
+          "correction": "Cue: 'Pull slack out of bar first'. Create tension before lift.",
+          "source": "Westside Barbell Deadlift Protocol"
+        }
+      ],
+      "context_modifiers": {
+        "powerlifting": {
+          "lockout_requirement": "Knees and hips fully extended, shoulders back",
+          "hitching": "Not allowed (bar must move in continuous motion)",
+          "source": "IPF Technical Rules 2024"
+        },
+        "sumo_deadlift": {
+          "stance_width": "Wide stance (1.5-2x shoulder width)",
+          "torso_angle": "More upright (> 60 degrees from horizontal)",
+          "source": "NSCA Sumo Deadlift Variations"
+        },
+        "beginner": {
+          "starting_recommendation": "Trap bar deadlift or Romanian deadlift first",
+          "load_limit": "50-60% estimated 1RM",
+          "source": "ACE Beginner Deadlift Progression"
+        }
+      }
+    },
+    
+    "pushup": {
+      "name": "Push-up",
+      "description": "Fundamental upper body pressing movement, closed kinetic chain exercise",
+      "safety_standards": {
+        "elbow_angle": {
+          "safe_range": [80, 180],
+          "optimal_bottom": [80, 90],
+          "unit": "degrees",
+          "measurement": "Elbow flexion at bottom position",
+          "violation_risk": "medium",
+          "source": "ACE Push-up Standards"
+        },
+        "body_alignment": {
+          "standard": "Straight line from head through hips to ankles (plank position)",
+          "measurement": "Hip vertical deviation from shoulder-ankle line",
+          "safe_deviation": "< 5cm hip sag or pike",
+          "violation_risk": "high",
+          "source": "NSCA Core Stability Guidelines"
+        },
+        "scapular_position": {
+          "standard": "Scapulae retracted and depressed (shoulders packed)",
+          "measurement": "Scapular winging angle",
+          "violation_risk": "medium",
+          "source": "ExRx.net Scapular Mechanics"
+        },
+        "hand_position": {
+          "standard": "Hands slightly wider than shoulder width, fingers forward",
+          "elbow_angle_top": "45 degrees from torso (not flared 90 degrees)",
+          "violation_risk": "medium",
+          "source": "ACE Exercise Technique Manual"
+        },
+        "depth": {
+          "standard": "Chest within 5cm of ground or touching",
+          "minimum_elbow_angle": "90 degrees",
+          "source": "Military Fitness Test Standards"
+        },
+        "neck_position": {
+          "standard": "Neutral cervical spine, head in line with body",
+          "violation_risk": "low",
+          "source": "NASM Postural Assessment"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Hip sagging (loss of core stability)",
+          "detection": "Hip position > 5cm below shoulder-ankle line",
+          "risk": "Lower back hyperextension, lumbar strain",
+          "correction": "Engage core. Cue: 'Squeeze glutes and abs'. Regress to knees or incline.",
+          "source": "McGill S. Core Training Research"
+        },
+        {
+          "error": "Hips piked up (inverted V shape)",
+          "detection": "Hip position > 5cm above shoulder-ankle line",
+          "risk": "Reduced muscle activation, shoulder stress",
+          "correction": "Lower hips to plank position. Strengthen core stability.",
+          "source": "ACE Pushup Form Analysis"
+        },
+        {
+          "error": "Flared elbows (> 70 degrees from torso)",
+          "detection": "Elbow angle relative to torso > 70 degrees",
+          "risk": "Shoulder impingement, rotator cuff strain",
+          "correction": "Tuck elbows to 45 degrees. Cue: 'Break bar apart'. Strengthen rotator cuff.",
+          "source": "NSCA Shoulder Safety Guidelines"
+        },
+        {
+          "error": "Incomplete range of motion",
+          "detection": "Elbow angle at bottom > 100 degrees",
+          "risk": "Reduced training effectiveness, poor movement pattern",
+          "correction": "Lower chest to within 5cm of ground. Regress to incline if needed.",
+          "source": "ACE Exercise Standards"
+        },
+        {
+          "error": "Scapular winging",
+          "detection": "Medial border of scapula lifts > 2cm off ribcage",
+          "risk": "Shoulder instability, serratus anterior weakness",
+          "correction": "Focus on protraction at top. Strengthen serratus anterior. Regress exercise.",
+          "source": "Kibler WB. Scapular Dysfunction Research"
+        },
+        {
+          "error": "Head dropping or craning",
+          "detection": "Cervical spine not neutral (flexed or extended > 10 degrees)",
+          "risk": "Neck strain, poor breathing mechanics",
+          "correction": "Look at spot 30cm ahead on ground. Keep neck neutral.",
+          "source": "NASM Cervical Positioning"
+        }
+      ],
+      "context_modifiers": {
+        "beginner": {
+          "regression": "Incline pushup (hands elevated) or knee pushup",
+          "progression_criteria": "10+ strict reps with perfect form",
+          "source": "ACE Pushup Progression"
+        },
+        "advanced": {
+          "progressions": "Deficit pushup, weighted vest, single-arm progression",
+          "source": "NSCA Advanced Pushup Variations"
+        },
+        "shoulder_injury": {
+          "hand_width": "Narrow grip to reduce shoulder stress",
+          "depth_limit": "Elbow 90 degrees maximum",
+          "source": "NASM Corrective Exercise"
+        }
+      }
+    },
+    
+    "pullup": {
+      "name": "Pull-up / Chin-up",
+      "description": "Vertical pulling movement for back and arm development",
+      "safety_standards": {
+        "shoulder_position_bottom": {
+          "standard": "Active hang - scapulae depressed, shoulders packed",
+          "measurement": "Shoulder elevation relative to relaxed hang",
+          "violation_risk": "high",
+          "source": "NSCA Pulling Exercise Standards"
+        },
+        "elbow_angle_bottom": {
+          "safe_range": [170, 180],
+          "unit": "degrees",
+          "measurement": "Full elbow extension at bottom",
+          "source": "ACE Pull-up Standards"
+        },
+        "completion_criteria": {
+          "standard": "Chin clears bar (chin-up) or chest touches bar (pull-up)",
+          "minimum": "Eyes level with bar",
+          "source": "Military Fitness Standards"
+        },
+        "body_position": {
+          "standard": "Vertical body position, minimal swing",
+          "safe_swing": "< 10 degrees from vertical",
+          "violation_risk": "medium",
+          "source": "ExRx.net Pull-up Mechanics"
+        },
+        "grip_width": {
+          "pullup": "Slightly wider than shoulder width, pronated grip",
+          "chinup": "Shoulder width, supinated grip",
+          "source": "NSCA Grip Variations"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Dead hang (relaxed shoulders)",
+          "detection": "Shoulders elevated toward ears at bottom position",
+          "risk": "Shoulder impingement, rotator cuff strain",
+          "correction": "Engage lats at bottom. Cue: 'Depress and retract scapulae'. Active hang always.",
+          "source": "Escamilla RF. Shoulder Biomechanics Research"
+        },
+        {
+          "error": "Excessive kipping/swinging",
+          "detection": "Body swing > 15 degrees from vertical",
+          "risk": "Shoulder injury, grip failure, ineffective training",
+          "correction": "Eliminate momentum. Use bands for assistance. Build strict pull-up strength.",
+          "source": "CrossFit Journal - Kipping vs Strict"
+        },
+        {
+          "error": "Incomplete range of motion",
+          "detection": "Chin does not clear bar or elbows not fully extended at bottom",
+          "risk": "Reduced training effectiveness, poor movement pattern",
+          "correction": "Full ROM requirement. Use assistance if needed (bands, machine).",
+          "source": "ACE Pull-up Standards"
+        },
+        {
+          "error": "Chin poking forward",
+          "detection": "Cervical extension > 15 degrees to clear bar",
+          "risk": "Neck strain, compensatory movement pattern",
+          "correction": "Pull chest to bar, not chin. Keep neck neutral.",
+          "source": "NASM Movement Assessment"
+        },
+        {
+          "error": "Elbow flare",
+          "detection": "Elbows moving laterally during pull",
+          "risk": "Reduced lat activation, shoulder stress",
+          "correction": "Cue: 'Pull elbows to ribs'. Engage lats throughout.",
+          "source": "ExRx.net Lat Activation"
+        }
+      ],
+      "context_modifiers": {
+        "beginner": {
+          "regression": "Assisted pull-up machine, band assistance, or negative reps",
+          "progression_criteria": "5+ strict reps from dead hang",
+          "source": "ACE Pull-up Progression Protocol"
+        },
+        "advanced": {
+          "progressions": "Weighted pull-ups, L-sit pull-ups, one-arm progressions",
+          "source": "NSCA Advanced Pulling Variations"
+        }
+      }
+    },
+    
+    "lunge": {
+      "name": "Forward Lunge",
+      "description": "Unilateral lower body movement pattern for leg strength and balance",
+      "safety_standards": {
+        "front_knee_angle": {
+          "safe_range": [80, 110],
+          "optimal_range": [85, 95],
+          "unit": "degrees",
+          "measurement": "Front leg knee angle at bottom position",
+          "violation_risk": "high",
+          "source": "ACE Lunge Biomechanics"
+        },
+        "front_knee_position": {
+          "standard": "Knee directly over ankle, not past toes",
+          "safe_forward": "< 2cm past toes",
+          "violation_risk": "high",
+          "source": "NSCA Lunge Safety Guidelines"
+        },
+        "rear_knee_position": {
+          "standard": "Rear knee hovers 2-5cm above ground at bottom",
+          "measurement": "Vertical distance from rear knee to ground",
+          "source": "ExRx.net Lunge Analysis"
+        },
+        "torso_angle": {
+          "safe_range": [80, 95],
+          "optimal": "90 degrees (vertical)",
+          "unit": "degrees from horizontal",
+          "measurement": "Torso upright position",
+          "violation_risk": "medium",
+          "source": "NASM Lunge Mechanics"
+        },
+        "hip_alignment": {
+          "standard": "Hips square, no lateral deviation or rotation",
+          "measurement": "Hip rotation relative to shoulders",
+          "safe_rotation": "< 5 degrees",
+          "violation_risk": "medium",
+          "source": "ACE Balance and Stability"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Front knee past toes excessively",
+          "detection": "Knee > 5cm anterior to toes at bottom",
+          "risk": "Patellofemoral pain, knee strain",
+          "correction": "Longer stride length. Sit back into front hip. Shift weight to heel.",
+          "source": "Farrokhi S. Knee Biomechanics Research"
+        },
+        {
+          "error": "Rear knee slamming ground",
+          "detection": "Rear knee contacts ground with force",
+          "risk": "Knee contusion, patella damage",
+          "correction": "Control descent. Stop 2-5cm above ground. Strengthen quadriceps.",
+          "source": "ACE Exercise Safety"
+        },
+        {
+          "error": "Forward lean (excessive torso flexion)",
+          "detection": "Torso angle < 75 degrees from horizontal",
+          "risk": "Lower back strain, balance loss",
+          "correction": "Keep chest up. Engage core. Shorten stride if needed.",
+          "source": "NSCA Postural Control"
+        },
+        {
+          "error": "Knee valgus on front leg",
+          "detection": "Front knee collapsing medially > 2cm",
+          "risk": "ACL injury, knee instability",
+          "correction": "Cue: 'Push knee out over 2nd toe'. Strengthen hip abductors.",
+          "source": "Hewett TE. ACL Injury Prevention"
+        },
+        {
+          "error": "Hip hiking or rotation",
+          "detection": "One hip elevated > 2cm or rotation > 5 degrees",
+          "risk": "Hip strain, sacroiliac dysfunction, balance issues",
+          "correction": "Focus on hip square positioning. Address hip mobility imbalances.",
+          "source": "NASM Corrective Exercise"
+        },
+        {
+          "error": "Stride too short",
+          "detection": "Front knee angle > 110 degrees at bottom",
+          "risk": "Reduced training effectiveness, incomplete ROM",
+          "correction": "Increase stride length. Front knee should be ~90 degrees.",
+          "source": "ACE Lunge Technique"
+        }
+      ],
+      "context_modifiers": {
+        "beginner": {
+          "recommendation": "Static split squat first, then progress to lunge",
+          "assistance": "Use TRX or wall for balance support",
+          "source": "ACE Lunge Progression"
+        },
+        "advanced": {
+          "variations": "Walking lunges, reverse lunges, weighted lunges, Bulgarian split squat",
+          "source": "NSCA Unilateral Training"
+        },
+        "knee_injury": {
+          "modification": "Reverse lunge (less knee stress) or step-up",
+          "depth_limit": "Front knee 90 degrees minimum",
+          "source": "NASM Knee Rehabilitation"
+        }
+      }
+    },
+    
+    "plank": {
+      "name": "Front Plank (Forearm Plank)",
+      "description": "Isometric core stability exercise",
+      "safety_standards": {
+        "body_alignment": {
+          "standard": "Straight line from head through shoulders, hips, knees, to ankles",
+          "measurement": "Hip vertical deviation from shoulder-ankle line",
+          "safe_deviation": "< 3cm sag or pike",
+          "violation_risk": "high",
+          "source": "McGill S. Core Training Guidelines"
+        },
+        "elbow_position": {
+          "standard": "Elbows directly under shoulders",
+          "measurement": "Horizontal distance elbow to shoulder",
+          "safe_deviation": "< 5cm forward or back",
+          "source": "NSCA Plank Standards"
+        },
+        "neck_position": {
+          "standard": "Neutral cervical spine, gaze at floor 30cm ahead",
+          "violation_risk": "low",
+          "source": "ACE Postural Guidelines"
+        },
+        "breathing": {
+          "standard": "Continuous breathing, no breath holding (Valsalva)",
+          "source": "McGill S. Bracing vs Hollowing"
+        }
+      },
+      "common_errors": [
+        {
+          "error": "Hip sagging",
+          "detection": "Hips > 5cm below shoulder-ankle line",
+          "risk": "Lumbar hyperextension, lower back pain",
+          "correction": "Engage core and glutes. Shorten hold time. Regress to knees.",
+          "source": "McGill S. Spine Mechanics"
+        },
+        {
+          "error": "Hips piked up",
+          "detection": "Hips > 5cm above shoulder-ankle line",
+          "risk": "Reduced core activation, shoulder stress",
+          "correction": "Lower hips to neutral. May indicate weak core - regress exercise.",
+          "source": "ACE Plank Assessment"
+        },
+        {
+          "error": "Shoulder blade winging",
+          "detection": "Scapulae protruding from back",
+          "risk": "Shoulder instability, serratus weakness",
+          "correction": "Push floor away with forearms. Strengthen serratus anterior.",
+          "source": "NASM Scapular Stability"
+        },
+        {
+          "error": "Head dropping or craning",
+          "detection": "Cervical flexion or extension > 10 degrees",
+          "risk": "Neck strain",
+          "correction": "Neutral neck, look at floor 30cm ahead.",
+          "source": "ACE Cervical Positioning"
+        }
+      ],
+      "context_modifiers": {
+        "beginner": {
+          "starting_duration": "10-20 seconds with perfect form",
+          "regression": "Plank on knees or incline plank",
+          "source": "McGill S. Plank Progression"
+        },
+        "advanced": {
+          "progressions": "Weighted plank, single-arm/leg plank, RKC plank",
+          "duration": "Focus on tension quality over duration (60s max)",
+          "source": "McGill S. Advanced Core Training"
+        }
+      }
+    }
+  },
+  
+  "general_principles": {
+    "assessment_priority": [
+      {
+        "priority": 1,
+        "category": "Critical Safety Issues",
+        "description": "Spinal position violations, joint angles indicating immediate injury risk",
+        "action": "Flag immediately, recommend stopping exercise"
+      },
+      {
+        "priority": 2,
+        "category": "High Injury Risk",
+        "description": "Knee valgus, excessive joint stress, unstable positions",
+        "action": "Provide immediate corrections, reduce load"
+      },
+      {
+        "priority": 3,
+        "category": "Form Inefficiencies",
+        "description": "Suboptimal movement patterns, incomplete ROM",
+        "action": "Suggest technique improvements"
+      },
+      {
+        "priority": 4,
+        "category": "Minor Adjustments",
+        "description": "Small deviations from optimal form",
+        "action": "Note for refinement, not urgent"
+      }
+    ],
+    "measurement_tolerance": {
+      "description": "Account for individual variation and measurement error",
+      "angle_tolerance": "±5 degrees for joint angles",
+      "position_tolerance": "±2cm for alignment measurements",
+      "source": "NSCA Biomechanical Assessment Standards"
+    },
+    "context_considerations": [
+      "Training experience level (beginner, intermediate, advanced)",
+      "Injury history and current limitations",
+      "Training goals (powerlifting, bodybuilding, general fitness)",
+      "Fatigue state (early vs late in set)",
+      "Anthropometric factors (limb lengths, mobility restrictions)"
+    ]
+  },
+  
+  "citation_requirements": {
+    "always_cite": "Every safety standard mentioned must include the source",
+    "measurement_format": "Always provide measured value and standard (e.g., 'Knee angle: 82° - Standard: ≥90°')",
+    "severity_labeling": "Use CRITICAL, HIGH, MEDIUM, LOW based on injury risk",
+    "evidence_based": "All recommendations must be grounded in these documented standards"
+  }
+}

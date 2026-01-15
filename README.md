@@ -8,15 +8,16 @@ A production-grade agentic system for analyzing human physical activity in long-
 ## 🎯 Project Overview
 
 This system answers natural language questions about human motion in videos by:
-- **Intelligently segmenting** long videos into analyzable chunks.
-- **Extracting motion data** using vision-language models for temporal analysis.
-- **Reasoning about technique** using LLMs with grounded evidence.
-- **Providing explainable answers** with timestamps and visual references.
+- **Temporal segmentation**: Divides video into 15-second chunks for efficient processing.
+- **Motion analysis**: Uses Gemini 1.5 Flash to describe movement, safety, and mechanics.
+- **Reasoning about technique**: Uses LLMs with grounded evidence from the video.
+- **Providing explainable answers**: Returns natural language answers with specific timestamp citations.
 
 ### Example Queries
 - *"Analyze the takeoff technique in this vault."*
 - *"Is this squat safe according to coaching standards?"*
-- *"What is the subject doing between 0:10 and 0:25?"*
+- *"What's the knee angle during the deepest part of the squat?"*
+- *"Compare the form in the first 3 reps vs the last 3 reps."*
 
 ---
 
@@ -30,11 +31,6 @@ The system follows a **three-phase agentic approach** inspired by human video co
 2. **Perceive Phase**: Dense motion extraction from selected segments using Gemini 1.5 Flash.
 3. **Review Phase**: Reasoning over extracted data to generate grounded answers.
 
-This architecture separates concerns:
-- **Perception Layer**: Gemini 1.5 Flash extracts motion and temporal features from video segments.
-- **Reasoning Layer**: Gemini 1.5 Flash/Pro interprets the extracted descriptions to answer complex questions.
-- **Knowledge Layer**: ChromaDB (Vector Database) stores processed segment descriptions for efficient retrieval.
-
 ```mermaid
 graph TD
     User[User] -->|Upload Video & Ask Question| Frontend
@@ -44,13 +40,13 @@ graph TD
         Backend -->|Orchestrate| Agent[Gemini Agent]
         
         subgraph "Perception Module"
-            VideoProcessor[Video Processor] -->|Chunk & Describe| LLM_Vision[Gemini 1.5 Flash]
+            VideoProcessor[Video Processor] -->|Chunk & Describe| LLM_Vision[Gemini Flash]
             LLM_Vision -->|Embeddings| ChromaDB[(ChromaDB)]
         end
         
         subgraph "Reasoning Module"
             Agent -->|Search| ChromaDB
-            Agent -->|Synthesize Answer| LLM_Reasoning[Gemini 1.5 Flash]
+            Agent -->|Synthesize Answer| LLM_Reasoning[Gemini Flash/Pro]
         end
     end
     
@@ -59,34 +55,29 @@ graph TD
 
 ---
 
-## 🔄 Data Flow & Storage
+## 🔄 Data Flow
 
-### 1. Storage & Pre-processing
-- **Uploads**: Raw videos are stored in `backend/uploads/`.
-- **Processing**: Videos are automatically split into 15-second chunks using FFmpeg and stored in `backend/processed/<video_name>/`.
+### 1. Ingestion Phase (Perception)
+When a long video is uploaded:
+1.  **Preprocessing**: The video is sliced into 15-second segments using FFmpeg.
+2.  **Summarization**: Each segment is passed to **Gemini 1.5 Flash** to generate a dense textual description of movement and mechanics.
+3.  **Embedding**: These descriptions are embedded and stored in **ChromaDB**, indexed by time range.
 
-### 2. Ingestion (Perception)
-- Each 15s chunk is analyzed by **Gemini 1.5 Flash** to generate a dense text description of movement, safety, and mechanics.
-- These descriptions are converted into vectors and stored in **ChromaDB**.
-
-### 3. Retrieval (Reasoning)
-- When a user asks a question, the system performs a **semantic search** in ChromaDB to find the most relevant video segments.
-- The retrieved descriptions are used as "evidence" for the LLM to generate a grounded, timestamped answer.
+### 2. Query Phase (Reasoning)
+When a user asks a question:
+1.  **Retrieval**: The Agent queries ChromaDB to find the specific timestamps where relevant events occur.
+2.  **Reasoning**: The system retrieves the text descriptions (evidence) and passes them to the LLM.
+3.  **Response**: The system returns a natural language answer citing specific timestamps (e.g., *"At 0:12, the squat depth was sufficient..."*).
 
 ---
 
 ## 🔧 Technology Stack
 
-### Core Technologies
 - **Backend**: FastAPI (Python 3.11+)
-- **Frontend**: Next.js + TypeScript + Tailwind CSS
+- **Frontend**: Next.js + TypeScript
 - **Vector Database**: ChromaDB
-- **Database**: PostgreSQL (for session/metadata)
+- **Models**: Google Gemini 1.5 Flash/Pro (via Vertex AI)
 - **Containerization**: Docker + Docker Compose
-
-### AI/ML Models
-- **Video Understanding**: Google Gemini 1.5 Flash (via Vertex AI)
-- **Embeddings**: Sentence Transformers (`all-MiniLM-L6-v2`)
 
 ---
 
@@ -94,154 +85,82 @@ graph TD
 
 ### Prerequisites
 - Docker & Docker Compose
-- **Google Cloud Project** with Vertex AI API enabled.
+- Google Cloud Project with Vertex AI API enabled.
 - Service Account credentials in `backend/credentials.json`.
 
-### Installation & Running
+### Running the System
+```bash
+docker compose up --build
+```
+Access the application at `http://localhost:3000`.
 
-1. **Configure Environment**:
-   Update `.env` with your project details:
-   ```env
-   GOOGLE_CLOUD_PROJECT=your-project-id
-   GOOGLE_CLOUD_LOCATION=us-central1
-   VERTEX_AI_MODEL=gemini-1.5-flash
-   ```
+---
 
-2. **Launch System**:
-   ```bash
-   docker compose up --build
-   ```
+## 🔐 CI/CD Pipeline
 
-3. **Access**:
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:8000/docs`
+The project includes a robust GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`):
+
+- **Secrets Scanning**: Uses `Gitleaks` to prevent accidental credential commits.
+- **Backend CI**: Linting (`Ruff`), Security Audit (`Bandit`), and Testing (`Pytest`).
+- **Frontend CI**: Linting (`ESLint`) and Build verification (`Next build`).
+- **Docker**: Validates `docker-compose` and service builds.
 
 ---
 
 ## 🔑 Key Design Decisions
 
 ### 1. **Separation of Perception and Reasoning**
-**Why**: Vision models are good at *what they see*, LLMs are good at *understanding what it means*
-- **Perception**: MediaPipe/Gemini extracts raw pose data and descriptions (no interpretation)
-- **Reasoning**: Gemini interprets motion data in context of coaching standards
-- **Benefit**: Modular, testable, and easier to improve each component independently
+**Why**: Vision models are good at *what they see*, LLMs are good at *understanding what it means*.
+- **Perception**: Gemini 1.5 Flash extracts raw descriptions (no interpretation).
+- **Reasoning**: Gemini interprets motion data in context of coaching standards.
 
 ### 2. **Hierarchical Video Segmentation**
-**Why**: Processing 30-minute videos frame-by-frame is computationally prohibitive
-- **Approach**: 15-second segments stored with embeddings
-- **Retrieval**: Only analyze segments relevant to the query
-- **Tradeoff**: May miss cross-segment patterns (addressed via context expansion)
+**Why**: Processing long videos frame-by-frame is computationally prohibitive.
+- **Approach**: 15-second segments stored with embeddings.
+- **Retrieval**: Only analyze segments relevant to the query.
 
 ### 3. **Vector Database for Temporal Search**
-**Why**: Traditional search (timestamps, keywords) doesn't capture semantic meaning
-- **Solution**: ChromaDB with sentence transformer embeddings
-- **Benefit**: Query "squat depth" retrieves relevant segments even without exact keywords
-- **Example**: "bad form" matches segments with poor technique descriptions
+**Why**: Traditional search doesn't capture semantic meaning.
+- **Solution**: ChromaDB with semantic embeddings.
+- **Benefit**: Query "bad form" matches segments with poor technique descriptions even without exact keywords.
 
 ### 4. **Grounding in Evidence**
-**Why**: Generic answers aren't useful for coaching
-- **Requirement**: Every claim must reference timestamps + metrics
-- **Implementation**: Prompt engineering forces model to cite evidence
-- **Example**: "At 2:15, knee angle is 110° (should be 90°±5°)"
+**Why**: Generic answers aren't useful for coaching.
+- **Implementation**: Prompt engineering forces the model to cite evidence with timestamps and metrics.
 
 ---
 
-## 📊 Performance Considerations
+## 📊 Performance & Scalability
 
-### Computational Efficiency
-- **Video Processing**: ~1-2 seconds per second of video
-- **Query Response**: 2-5 seconds (retrieval + reasoning)
-- **Memory**: ~500MB per 10-minute video in memory
-
-### Optimization Strategies
-1. **Lazy Loading**: Only process segments when needed
-2. **Caching**: Store pose data to avoid reprocessing
-3. **Model Selection**: Use `gemini-1.5-flash` for speed, `gemini-1.5-pro` for accuracy
-
----
-
-## 🧪 Testing & Validation
-
-### Test Cases
-```bash
-# Test video processing
-python backend/tests/test_video_processing.py
-
-# Test LLM integration
-python backend/tests/test_gemini.py
-```
-
-### Validation Metrics
-- **Retrieval Quality**: Relevance of retrieved segments to query
-- **Answer Grounding**: % of answers with timestamp references
+- **Efficiency**: Video processing takes ~1-2s per second of video.
+- **Scalability**: Uses ChromaDB for O(log n) retrieval of segments.
+- **Optimization**: Caching and lazy loading are used to reduce redundant AI calls.
 
 ---
 
 ## 🛣️ Future Improvements
 
-### Short-term
-- [ ] Add confidence scores to all outputs
-- [ ] Implement video quality checks
-- [ ] Support multi-person videos
-
-### Medium-term
-- [ ] Fine-tune smaller models for specific sports
-- [ ] Add comparative analysis (rep-to-rep)
-- [ ] Implement trajectory tracking
-
-### Long-term
-- [ ] Real-time analysis for live coaching
-- [ ] Mobile app deployment
-- [ ] Integration with wearable sensors
+- [ ] Add confidence scores to all outputs.
+- [ ] Implement comparative analysis (rep-to-rep).
+- [ ] Add real-time pose landmark extraction via MediaPipe for biomechanical metrics.
+- [ ] Support multi-person video analysis.
 
 ---
 
 ## 📝 Project Structure
 
 ```
-motion-analysis-agent/
+.
 ├── backend/
 │   ├── app/
-│   │   ├── api/              # FastAPI endpoints
-│   │   ├── services/         # Core business logic
-│   │   │   ├── video_service.py      # Segmentation & FFmpeg
-│   │   │   ├── workflow.py           # Orchestration
-│   │   │   ├── vector_db.py          # ChromaDB wrapper
-│   │   │   └── gemini_service.py     # Vertex AI integration
-│   │   ├── core/             # Configuration
-│   │   └── main.py           # Entry point
-│   ├── requirements.txt
+│   │   ├── api/          # API Routes
+│   │   ├── services/     # Video, Gemini, VectorDB logic
+│   │   └── core/         # Config & Settings
+│   ├── main.py
 │   └── Dockerfile
 ├── frontend/
-│   ├── app/                  # Next.js App Router
-│   ├── components/           # React components
-│   └── package.json
+│   ├── app/              # Next.js Pages
+│   └── components/       # React Components
 ├── docker-compose.yml
-└── README.md                 # This file
+└── README.md
 ```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Google Gemini**: Multi-modal video understanding
-- **ChromaDB**: Vector storage and retrieval
-- **FastAPI**: High-performance backend framework
-- **Next.js**: Modern React framework
