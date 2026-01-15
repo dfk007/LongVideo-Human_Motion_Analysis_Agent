@@ -14,47 +14,32 @@ logger = logging.getLogger(__name__)
 
 class GeminiService:
     def __init__(self):
-        self.use_vertex = True # Enforce Vertex AI usage with Service Account
+        self.use_vertex = True 
         
         if not HAS_VERTEX:
-            raise RuntimeError("vertexai library not installed. Add google-cloud-aiplatform to requirements.")
+            raise RuntimeError("vertexai library not installed.")
         
         try:
-            # Vertex AI automatically picks up GOOGLE_APPLICATION_CREDENTIALS
             vertexai.init(
                 project=settings.GOOGLE_CLOUD_PROJECT,
                 location=settings.GOOGLE_CLOUD_LOCATION
             )
-            self.model = GenerativeModel(settings.GEMINI_MODEL_NAME)
-            logger.info(f"Vertex AI initialized with Service Account. Model: {settings.GEMINI_MODEL_NAME}")
+            # Using the new model name VERTEX_AI_MODEL
+            self.model = GenerativeModel(settings.VERTEX_AI_MODEL)
+            logger.info(f"Vertex AI initialized. Model: {settings.VERTEX_AI_MODEL}")
         except Exception as e:
             logger.error(f"Failed to initialize Vertex AI: {e}")
             raise
 
     def describe_segment(self, video_path: str) -> str:
-        """
-        Uploads a video segment and gets a detailed description.
-        """
-        prompt = """
-        Analyze this video segment of human physical activity.
-        Provide a detailed, objective description of:
-        1. The specific movement or exercise being performed.
-        2. Key body mechanics (posture, limb angles, speed).
-        3. Any notable errors, safety concerns, or good technique indicators.
-        4. The environment and equipment used.
-        
-        Be concise but thorough. Focus on visual evidence.
-        """
-
         try:
-            # Vertex AI: Send video bytes directly
+            prompt = "Analyze this video segment and describe movement, safety, and mechanics."
             with open(video_path, "rb") as f:
                 video_bytes = f.read()
             
             video_part = Part.from_data(data=video_bytes, mime_type="video/mp4")
             response = self.model.generate_content([video_part, prompt])
             return response.text
-                
         except Exception as e:
             logger.error(f"Error describing segment: {e}")
             return f"Error analyzing segment: {str(e)}"
