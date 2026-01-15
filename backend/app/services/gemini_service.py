@@ -1,60 +1,70 @@
 import os
-import google.generativeai as genai
+import logging
 from app.core.config import settings
-import time
 
-# Configure GenAI
-genai.configure(api_key=os.getenv("VERTEX_API_KEY"))
+# Vertex AI imports
+try:
+    import vertexai
+    from vertexai.generative_models import GenerativeModel, Part
+    HAS_VERTEX = True
+except ImportError:
+    HAS_VERTEX = False
+
+logger = logging.getLogger(__name__)
 
 class GeminiService:
     def __init__(self):
-        self.model_name = settings.GEMINI_MODEL_NAME
-        self.model = genai.GenerativeModel(self.model_name)
-
-    def upload_video(self, video_path: str):
-        """Uploads video to Google AI Studio File API"""
-        print(f"Uploading file: {video_path}")
-        video_file = genai.upload_file(path=video_path)
+        self.use_vertex = True # Enforce Vertex AI usage with Service Account
         
-        # Wait for processing
-        while video_file.state.name == "PROCESSING":
-            print("Processing video...")
-            time.sleep(2)
-            video_file = genai.get_file(video_file.name)
-            
-        if video_file.state.name == "FAILED":
-            raise ValueError(f"Video processing failed: {video_file.state.name}")
-            
-        print(f"Video ready: {video_file.name}")
-        return video_file
+        if not HAS_VERTEX:
+            raise RuntimeError("vertexai library not installed. Add google-cloud-aiplatform to requirements.")
+        
+        try:
+            # Vertex AI automatically picks up GOOGLE_APPLICATION_CREDENTIALS
+            vertexai.init(
+                project=settings.GOOGLE_CLOUD_PROJECT,
+                location=settings.GOOGLE_CLOUD_LOCATION
+            )
+            self.model = GenerativeModel(settings.GEMINI_MODEL_NAME)
+            logger.info(f"Vertex AI initialized with Service Account. Model: {settings.GEMINI_MODEL_NAME}")
+        except Exception as e:
+            logger.error(f"Failed to initialize Vertex AI: {e}")
+            raise
 
     def describe_segment(self, video_path: str) -> str:
         """
         Uploads a video segment and gets a detailed description.
         """
+        prompt = """
+        Analyze this video segment of human physical activity.
+        Provide a detailed, objective description of:
+        1. The specific movement or exercise being performed.
+        2. Key body mechanics (posture, limb angles, speed).
+        3. Any notable errors, safety concerns, or good technique indicators.
+        4. The environment and equipment used.
+        
+        Be concise but thorough. Focus on visual evidence.
+        """
+
         try:
-            video_file = self.upload_video(video_path)
+            # Vertex AI: Send video bytes directly
+            with open(video_path, "rb") as f:
+                video_bytes = f.read()
             
-            prompt = """
-            Analyze this video segment of human physical activity.
-            Provide a detailed, objective description of:
-            1. The specific movement or exercise being performed.
-            2. Key body mechanics (posture, limb angles, speed).
-            3. Any notable errors, safety concerns, or good technique indicators.
-            4. The environment and equipment used.
-            
-            Be concise but thorough. Focus on visual evidence.
-            """
-            
-            response = self.model.generate_content([video_file, prompt])
-            
-            # Clean up file after analysis to save storage/limit
-            # genai.delete_file(video_file.name) 
-            # (Optional: keep it if we want to re-query, but for now let's assume one-pass indexing)
-            
+            video_part = Part.from_data(data=video_bytes, mime_type="video/mp4")
+            response = self.model.generate_content([video_part, prompt])
+            return response.text
+                
+        except Exception as e:
+            logger.error(f"Error describing segment: {e}")
+            return f"Error analyzing segment: {str(e)}"
+
+    def generate_answer(self, prompt: str) -> str:
+        try:
+            response = self.model.generate_content(prompt)
             return response.text
         except Exception as e:
-            print(f"Error describing segment: {e}")
-            return "Error analyzing segment."
+            logger.error(f"Error generating answer: {e}")
+            return "I encountered an error generating the answer."
 
 gemini_service = GeminiService()

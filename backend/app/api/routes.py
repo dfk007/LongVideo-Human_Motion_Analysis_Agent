@@ -66,9 +66,8 @@ async def query_video(request: QueryRequest):
     """
     
     try:
-        # We reuse the GeminiService model for text generation
-        response = gemini_service.model.generate_content(prompt)
-        answer = response.text
+        # We reuse the GeminiService wrapper
+        answer = gemini_service.generate_answer(prompt)
     except Exception as e:
         answer = "I encountered an error generating the answer."
         print(f"Error generating answer: {e}")
