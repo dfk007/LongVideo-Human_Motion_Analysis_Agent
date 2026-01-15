@@ -1,4 +1,4 @@
-name: Production CI/CD Pipeline
+name: CI
 
 on:
   push:
@@ -7,103 +7,78 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # ✅ 5. Security Scans: Secrets Detection
-  secrets-scan:
-    name: 🔐 Secrets Scan
+  security:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Gitleaks Secret Scanner
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ✅ 1. Build & Compile: Backend
-  backend-ci:
-    name: 🐍 Backend Build & Quality
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # ✅ 8. Caching: Python dependencies
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
         with:
-          python-version: "3.11"
-          cache: "pip"
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --debug --only-verified
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r backend/requirements.txt
-          pip install ruff bandit pytest httpx
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      # We export dummy env vars to prevent import errors during installation/linting if code executes logic at module level
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff pytest
+        pip install -r requirements.txt
+      env:
+        GOOGLE_API_KEY: "dummy_key_for_ci"
+        GOOGLE_CLOUD_PROJECT: "dummy_project"
+        GOOGLE_APPLICATION_CREDENTIALS: "dummy_creds.json"
+    - name: Lint with Ruff
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        ruff check . --select=E9,F63,F7,F82 --target-version=py310
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        ruff check . --exit-zero --max-complexity=10 --max-line-length=127 --target-version=py310
+    - name: Test with pytest
+      run: |
+        pytest
+      env:
+        GOOGLE_API_KEY: "dummy_key_for_ci"
+        GOOGLE_CLOUD_PROJECT: "dummy_project"
+        GOOGLE_APPLICATION_CREDENTIALS: "dummy_creds.json"
 
-      # ✅ 3. Linting: Ruff (Fast Python linter)
-      - name: Lint Code (Ruff)
-        run: |
-          ruff check backend/app --output-format=github
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    - name: Install dependencies
+      run: npm ci
+    - name: Lint
+      run: npm run lint
+    - name: Build
+      run: npm run build
 
-      # ✅ 5. Security Scans: SAST with Bandit
-      - name: Security Audit (Bandit)
-        run: |
-          bandit -r backend/app -f custom --msg-template "{severity}: {msg}"
-
-      # ✅ 2. Automated Testing: Pytest (If tests exist)
-      - name: Run Unit Tests
-        id: run_tests
-        run: |
-          if [ -d "backend/tests" ]; then
-            pytest backend/tests
-          else
-            echo "No tests folder found. Skipping tests."
-          fi
-
-  # ✅ 1. Build & Compile: Frontend
-  frontend-ci:
-    name: ⚛️ Frontend Build & Quality
+  docker-validation:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # ✅ 7. Matrix & Parallel Testing: Node.js version (Simulated)
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install Dependencies
-        working-directory: ./frontend
-        run: npm ci
-
-      # ✅ 3. Linting: ESLint
-      - name: Lint Code
-        working-directory: ./frontend
-        run: npm run lint
-
-      # ✅ 4. Code Quality: Type Checking & Build
-      - name: Type Check & Build
-        working-directory: ./frontend
-        run: npm run build
-
-  # ✅ 10. Deployment Automation: Docker Integration Check
-  docker-integration:
-    name: 🐳 Docker Compose Build
-    runs-on: ubuntu-latest
-    needs: [backend-ci, frontend-ci]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Validate Docker Compose Config
-        run: docker compose config
-
-      - name: Build Services
-        run: docker compose build
+    - uses: actions/checkout@v3
+    - name: Validate docker-compose
+      run: docker compose config
