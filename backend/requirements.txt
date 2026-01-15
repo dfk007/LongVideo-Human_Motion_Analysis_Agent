@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+google-cloud-aiplatform
+google-generativeai
+chromadb
+psycopg2-binary
+python-dotenv
+pydantic
+requests
+langchain
+langchain-google-genai
+sqlalchemy
+ffmpeg-python
+python-multipart
