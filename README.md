@@ -5,7 +5,8 @@ A production-grade agentic system for analyzing human physical activity in long-
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## 🎯 Project Overview [![Demo Video](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)
+## 🎯 Project Overview | [Demo Video](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)]
+
 
 This system answers natural language questions about human motion in videos by:
 - **Temporal segmentation**: Divides video into 15-second chunks for efficient processing.
