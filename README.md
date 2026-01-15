@@ -5,8 +5,7 @@ A production-grade agentic system for analyzing human physical activity in long-
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## 🎯 Project Overview | [Demo Video](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)
-
+## 🎯 Project Overview | [![Demo Video](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)](https://app.arcade.software/share/So5c4zYey9EO218oKDI2)
 
 This system answers natural language questions about human motion in videos by:
 - **Temporal segmentation**: Divides video into 15-second chunks for efficient processing.
@@ -87,13 +86,20 @@ When a user asks a question:
 ### Prerequisites
 - Docker & Docker Compose
 - Google Cloud Project with Vertex AI API enabled.
-- Service Account credentials in `backend/credentials.json`.
+- **Either** a Service Account (`backend/credentials.json`) **OR** a `GOOGLE_API_KEY`.
 
 ### Running the System
-```bash
-docker compose up --build
-```
-Access the application at `http://localhost:3000`.
+1. **Configure Environment**:
+   ```bash
+   cp .env.template .env
+   # Edit .env and add your GOOGLE_API_KEY or credentials path
+   ```
+
+2. **Start Services**:
+   ```bash
+   docker compose up --build
+   ```
+3. Access the application at `http://localhost:3000`.
 
 ---
 
