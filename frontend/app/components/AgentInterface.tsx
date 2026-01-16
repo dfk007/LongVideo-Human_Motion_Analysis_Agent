@@ -5,7 +5,13 @@ import axios from 'axios';
 import { Upload, Send, FileVideo, Clock, Play } from 'lucide-react';
 
 // Configuration
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Dynamically connect to the same hostname on port 8000
+    return `${window.location.protocol}//${window.location.hostname}:8000`;
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+};
 
 interface Message {
   role: 'user' | 'agent';
@@ -21,6 +27,9 @@ export default function AgentInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [filename, setFilename] = useState<string | null>(null);
+  
+  // Get API URL dynamically
+  const API_URL = getApiUrl();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -35,6 +44,7 @@ export default function AgentInterface() {
     formData.append('file', file);
 
     try {
+      console.log(`Uploading to: ${API_URL}/api/upload`);
       const res = await axios.post(`${API_URL}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -43,8 +53,8 @@ export default function AgentInterface() {
       // In a real app, we'd poll for status. Here we just assume it's "ready" for queries soon.
       alert("Video uploaded! Processing started. Please wait a moment before querying.");
     } catch (err) {
-      console.error(err);
-      alert("Upload failed.");
+      console.error("Upload Error:", err);
+      alert(`Upload failed. Check console for details. (Target: ${API_URL})`);
     } finally {
       setUploading(false);
     }

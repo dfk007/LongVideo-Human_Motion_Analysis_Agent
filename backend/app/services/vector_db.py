@@ -2,20 +2,44 @@ import chromadb
 from chromadb.config import Settings
 from app.core.config import settings
 from typing import List, Dict
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 class VectorDBService:
     def __init__(self):
-        # Connect to ChromaDB container
-        self.client = chromadb.HttpClient(
-            host=settings.CHROMA_HOST,
-            port=settings.CHROMA_PORT
-        )
+        self._connect_with_retry()
+
+    def _connect_with_retry(self, max_retries=10, delay=3):
+        host = settings.CHROMA_HOST
+        port = settings.CHROMA_PORT
+        logger.info(f"Connecting to ChromaDB at {host}:{port}...")
         
-        # Get or create collection
-        self.collection = self.client.get_or_create_collection(
-            name="video_segments"
-            # embedding_function defaults to all-MiniLM-L6-v2
-        )
+        for attempt in range(max_retries):
+            try:
+                # Connect to ChromaDB container
+                self.client = chromadb.HttpClient(
+                    host=host,
+                    port=port
+                )
+                
+                # Test connection
+                self.client.heartbeat()
+                
+                # Get or create collection
+                self.collection = self.client.get_or_create_collection(
+                    name="video_segments"
+                )
+                logger.info("Successfully connected to ChromaDB")
+                return
+            except Exception as e:
+                logger.warning(f"Failed to connect to ChromaDB (attempt {attempt+1}/{max_retries}): {e}")
+                if attempt < max_retries - 1:
+                    time.sleep(delay)
+                else:
+                    logger.error("Could not connect to ChromaDB after multiple attempts")
+                    raise e
 
     def add_segments(self, segments_data: List[Dict]):
         """

@@ -2,13 +2,13 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files first
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies using npm ci (faster than install)
+RUN npm ci
 
-# Copy source
+# Copy source code
 COPY . .
 
 # Expose port
