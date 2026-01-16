@@ -27,10 +27,10 @@ app = FastAPI(
     Motion Analysis Agent API
     
     An agentic system for analyzing human motion in videos using:
-    - MediaPipe for pose estimation
-    - LangChain for agentic reasoning
-    - Google Gemini for natural language understanding
-    - ChromaDB for semantic video search
+    - Ollama Cloud for natural language reasoning
+    - MediaPipe for human pose estimation
+    - ChromaDB for vector-based evidence retrieval
+    - FastAPI for the backend API layer
     
     Upload a video and ask questions like:
     - "Is this squat safe according to coaching standards?"
@@ -66,17 +66,17 @@ async def startup_event():
     logger.info(f"{settings.PROJECT_NAME} v{settings.VERSION}")
     logger.info("=" * 60)
     logger.info(f"Environment: {settings.ENVIRONMENT}")
-    logger.info(f"Model: {settings.GEMINI_MODEL}")
+    logger.info(f"LLM: Ollama Cloud ({settings.OLLAMA_MODEL})")
     logger.info(f"ChromaDB: {settings.CHROMA_URL}")
     logger.info(f"Upload Directory: {settings.UPLOAD_DIR}")
     logger.info(f"Processed Directory: {settings.PROCESSED_DIR}")
     logger.info("=" * 60)
     
-    # Validate API key
-    if not settings.GOOGLE_API_KEY:
-        logger.error("⚠️  GOOGLE_API_KEY not set! Please configure in .env file")
+    # Validate Ollama configuration
+    if settings.OLLAMA_API_KEY:
+        logger.info("✓ Ollama Cloud API Key configured")
     else:
-        logger.info("✓ Google API Key configured")
+        logger.warning("⚠️  Using local Ollama (no API key set)")
     
     logger.info("Application startup complete")
 

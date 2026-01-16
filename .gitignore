@@ -28,3 +28,20 @@ frontend/build/
 
 *.mp4
 gemini-api.md
+gemini-cli-with-vertex-api.md
+Screenshot 2026-01-16 at 9.42.04 PM.png
+processed/chunk_000/chunk_000.mp4
+processed/chunk_000/chunk_000.mp4
+Screenshot 2026-01-16 at 9.42.53 PM.png
+processed/chunk_000/chunk_000.mp4
+processed/chunk_000/chunk_000.mp4
+processed/chunk_000/chunk_000.mp4
+processed/chunk_000/chunk_000.mp4
+processed/Do-You-Have-Perfect-Squat/pose_data/Do-You-Have-Perfect-Squat_0_pose.json
+processed/*.mp4
+processed/*.json
+processed/chunk_001/pose_data/chunk_001_0_pose.json
+processed/chunk_000/pose_data/*.json
+processed/*
+backend/processed/flat-butt/*
+backend/processed/How-to-squat-correctly/*

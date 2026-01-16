@@ -49,7 +49,7 @@ class QueryResponse(BaseModel):
 # API Endpoints
 
 @router.post("/upload")
-async def upload_video(
+def upload_video(
     background_tasks: BackgroundTasks, 
     file: UploadFile = File(...)
 ):
@@ -82,8 +82,8 @@ async def upload_video(
     
     # Save file
     try:
-        content = await file.read()
-        file_path = await video_service.save_upload(content, file.filename)
+        content = file.file.read()
+        file_path = video_service.save_upload_sync(content, file.filename)
         logger.info(f"Saved file to: {file_path}")
     except Exception as e:
         logger.error(f"Failed to save file: {e}")
@@ -104,7 +104,7 @@ async def upload_video(
 
 
 @router.post("/query", response_model=QueryResponse)
-async def query_video(request: QueryRequest):
+def query_video(request: QueryRequest):
     """
     Answer a question about the uploaded video.
     
@@ -175,12 +175,12 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "Motion Analysis Agent",
-        "model": settings.GEMINI_MODEL,
+        "model": settings.OLLAMA_MODEL,
         "features": {
             "pose_estimation": "MediaPipe",
             "agent_framework": "LangChain",
             "vector_db": "ChromaDB",
-            "llm": "Google Gemini"
+            "llm": "Ollama Cloud"
         }
     }
 

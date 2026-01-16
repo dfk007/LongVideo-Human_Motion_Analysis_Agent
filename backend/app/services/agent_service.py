@@ -16,7 +16,7 @@ from pathlib import Path
 
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.tools import Tool
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from langchain.prompts import PromptTemplate
 
 from app.services.vector_db import vector_db
@@ -41,11 +41,18 @@ class MotionAnalysisAgent:
     def __init__(self):
         """Initialize the agent with tools and LLM"""
         
-        # Initialize LLM
-        self.llm = ChatGoogleGenerativeAI(
-            model=settings.GEMINI_MODEL,
-            google_api_key=settings.GOOGLE_API_KEY,
-            temperature=0.3  # Lower temperature for more factual responses
+        # Initialize LLM (Ollama Cloud)
+        client_kwargs = {}
+        if settings.OLLAMA_API_KEY:
+            client_kwargs["headers"] = {
+                "Authorization": f"Bearer {settings.OLLAMA_API_KEY}"
+            }
+            
+        self.llm = ChatOllama(
+            base_url=settings.OLLAMA_BASE_URL,
+            model=settings.OLLAMA_MODEL,
+            temperature=0.3,
+            client_kwargs=client_kwargs
         )
         
         # Initialize helper services
@@ -64,7 +71,8 @@ class MotionAnalysisAgent:
             tools=self.tools,
             verbose=True,
             max_iterations=5,
-            handle_parsing_errors=True
+            handle_parsing_errors=True,
+            return_intermediate_steps=True
         )
     
     def _create_tools(self) -> List[Tool]:
@@ -147,16 +155,16 @@ Final Answer: the final answer to the original input question
 CRITICAL INSTRUCTIONS:
 1. ALWAYS use tools to gather evidence before answering
 2. ALWAYS cite specific timestamps and measurements in your answer
-3. ALWAYS check safety using the validate_safety tool
+3. ALWAYS check safety using the validate_safety tool when relevant
 4. Use search_video_segments FIRST to find relevant moments
-5. Then use get_pose_analysis to get measurements
+5. Then use get_pose_analysis to get precise measurements
 6. Compare measurements against standards using validate_safety
 7. Reference specific angles, positions, and timestamps in your final answer
 
 When answering:
 - Start with search_video_segments to find relevant clips
 - Get detailed measurements with get_pose_analysis
-- Validate safety with validate_safety
+- Validate safety with validate_safety when discussing technique/safety
 - Cite ALL evidence (timestamps, angles, measurements)
 - Be specific and quantitative
 

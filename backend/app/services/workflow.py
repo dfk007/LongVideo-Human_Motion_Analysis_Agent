@@ -4,7 +4,7 @@ Video Processing Workflow
 This module orchestrates the complete video processing pipeline:
 1. Split video into chunks
 2. Extract pose data from each chunk
-3. Generate descriptions using Gemini
+3. Generate descriptions using pose data
 4. Store everything in vector database
 
 This implements the "perception" layer - separating what we see
@@ -16,7 +16,7 @@ from pathlib import Path
 import json
 
 from app.services.video_service import VideoService
-from app.services.gemini_service import gemini_service
+# from app.services.gemini_service import gemini_service  # Removed - using Ollama only
 from app.services.vector_db import vector_db
 from app.services.pose_estimation import PoseEstimator
 from app.core.config import settings
@@ -31,7 +31,7 @@ class ProcessingWorkflow:
     This workflow implements efficient long-video handling by:
     - Chunking videos into manageable segments
     - Extracting pose data (perception)
-    - Generating semantic descriptions
+    - Generating semantic descriptions using pose data summary
     - Indexing for fast retrieval
     """
     
@@ -43,7 +43,7 @@ class ProcessingWorkflow:
             min_tracking_confidence=settings.MEDIAPIPE_MIN_TRACKING_CONFIDENCE
         )
     
-    async def process_video(self, video_path: str, filename: str):
+    def process_video(self, video_path: str, filename: str):
         """
         Main processing pipeline for uploaded videos.
         
@@ -148,7 +148,7 @@ class ProcessingWorkflow:
     
     def _generate_chunk_description(self, chunk: dict, pose_data: list) -> str:
         """
-        Generate a semantic description of the chunk using Gemini.
+        Generate a semantic description of the chunk using pose data.
         
         This creates a searchable text representation that includes:
         - What movement is happening
@@ -171,14 +171,17 @@ class ProcessingWorkflow:
                         f"(mean: {stats['mean']:.1f}°)\n"
                     )
             
-            # Generate description using Gemini
-            description = gemini_service.describe_segment(
-                chunk['path']
-            )
-            
-            # Append pose data summary to description
-            if pose_summary:
-                description = description + pose_summary
+            # Generate simple description (Gemini removed - using pose data only)
+            if pose_data:
+                description = (
+                    f"Video segment from {chunk['start_time']}s to {chunk['end_time']}s. "
+                    f"Contains {len(pose_data)} pose detections. " + pose_summary
+                )
+            else:
+                description = (
+                    f"Video segment from {chunk['start_time']}s to {chunk['end_time']}s. "
+                    "No pose data detected."
+                )
             
             return description
             

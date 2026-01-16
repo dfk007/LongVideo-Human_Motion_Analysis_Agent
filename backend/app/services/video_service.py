@@ -9,11 +9,14 @@ class VideoService:
     def __init__(self):
         pass
 
-    async def save_upload(self, file_content: bytes, filename: str) -> str:
+    def save_upload_sync(self, file_content: bytes, filename: str) -> str:
         file_path = os.path.join(settings.UPLOAD_DIR, filename)
         with open(file_path, "wb") as f:
             f.write(file_content)
         return file_path
+
+    async def save_upload(self, file_content: bytes, filename: str) -> str:
+        return self.save_upload_sync(file_content, filename)
 
     def split_video(self, video_path: str, chunk_duration: int = 15) -> List[Dict]:
         """

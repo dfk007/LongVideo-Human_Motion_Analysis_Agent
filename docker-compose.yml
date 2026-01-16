@@ -22,6 +22,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      # Enable BuildKit inline cache for faster rebuilds
+      args:
+        - BUILDKIT_INLINE_CACHE=1
     container_name: motion_analysis_backend
     ports:
       - "8000:8000"
@@ -34,10 +37,11 @@ services:
       - ./backend:/app
       - ./uploads:/app/uploads
       - ./processed:/app/processed
+      - chroma_cache:/root/.cache
     networks:
       - motion_network
     # Increase memory for MediaPipe processing
-    mem_limit: 4g
+    mem_limit: 12g
     shm_size: 2g
 
   # Database: PostgreSQL
@@ -72,6 +76,7 @@ services:
 volumes:
   postgres_data:
   chroma_data:
+  chroma_cache:
 
 networks:
   motion_network:

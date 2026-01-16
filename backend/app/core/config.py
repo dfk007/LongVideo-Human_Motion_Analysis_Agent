@@ -29,15 +29,20 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     
-    # API Keys
-    GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY")
-    GOOGLE_CLOUD_PROJECT: str = os.getenv("GOOGLE_CLOUD_PROJECT", "")
-    GOOGLE_CLOUD_LOCATION: str = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
-    GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    # API Keys (Legacy - Not used with Ollama Cloud)
+    # GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY")
+    # GOOGLE_CLOUD_PROJECT: str = os.getenv("GOOGLE_CLOUD_PROJECT", "")
+    # GOOGLE_CLOUD_LOCATION: str = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
+    # GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     
-    # Model Configuration
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
-    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "text-embedding-004")
+    # Model Configuration (Legacy)
+    # GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    # EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "text-embedding-004")
+    
+    # Ollama Configuration
+    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://ollama:11434")
+    OLLAMA_API_KEY: Optional[str] = os.getenv("OLLAMA_API_KEY")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "tinyllama")
     
     # Backend Server Configuration
     BACKEND_HOST: str = os.getenv("BACKEND_HOST", "0.0.0.0")
@@ -134,9 +139,8 @@ os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 os.makedirs(settings.PROCESSED_DIR, exist_ok=True)
 
 # Validate critical settings
-if not settings.GOOGLE_API_KEY:
+if not settings.OLLAMA_API_KEY and "ollama.com" in settings.OLLAMA_BASE_URL:
     import warnings
     warnings.warn(
-        "GOOGLE_API_KEY not set! The system will not work without it. "
-        "Please set GOOGLE_API_KEY in your .env file."
+        "OLLAMA_API_KEY not set for Cloud access! Requests to ollama.com will fail."
     )
