@@ -78,7 +78,7 @@ class Settings(BaseSettings):
     - Large enough to see complete movements
     """
     
-    FRAME_SAMPLE_RATE: int = int(os.getenv("FRAME_SAMPLE_RATE", 3))
+    FRAME_SAMPLE_RATE: int = int(os.getenv("FRAME_SAMPLE_RATE", 10))
     """Process every Nth frame from video.
     
     With 30fps video and sample_rate=3, we process at 10fps.

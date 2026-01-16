@@ -25,3 +25,5 @@ frontend/build/
 # IDE
 .vscode/
 .idea/
+
+*.mp4

@@ -275,9 +275,7 @@ class PoseEstimator:
         return float(angle_deg)
     
     @staticmethod
-    
     def analyze_motion_sequence(
-        self, 
         pose_sequence: List[PoseData]
     ) -> Dict[str, any]:
         """
