@@ -27,3 +27,4 @@ frontend/build/
 .idea/
 
 *.mp4
+gemini-api.md
